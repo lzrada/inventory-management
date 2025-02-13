@@ -147,13 +147,21 @@ const Page = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleDropdown = () => setIsOpen(!isOpen);
 
+  const handlePrint = () => {
+    if (typeof window !== "undefined") {
+      // Pastikan window ada
+      window.print();
+    }
+  };
   return (
     <div className="flex">
-      <Sidebar />
+      <div className="no-print">
+        <Sidebar />
+      </div>
       <div className="flex flex-col p-4 flex-grow">
-        <h2 className="text-3xl font-bold my-3">Input</h2>
-        <p className="text-xl font-mono">Pilih Data Ruang</p>
-        <div className="flex justify-between">
+        <h2 className="text-3xl font-bold my-3 no-print">Input</h2>
+        <p className="text-xl font-mono no-print">Pilih Data Ruang</p>
+        <div className="flex justify-between no-print">
           <div className="relative flex-col text-left mt-3 ">
             <button onClick={toggleDropdown} className="inline-flex  justify-center w-44 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-100">
               Pilih Opsi
@@ -189,9 +197,8 @@ const Page = () => {
             Add New
           </button>
         </div>
-
         {/* ruang kelas */}
-        <div className="gap-3 flex mt-4">
+        <div className="gap-3 flex mt-4 no-print">
           <Link href={"/sarpras"} className="flex w-9 h-9 rounded-xl border border-gray-500 justify-center items-center cursor-pointer hover:bg-gray-100 ">
             A
           </Link>
@@ -210,7 +217,7 @@ const Page = () => {
                 <th className="border p-2">Quantity</th>
                 <th className="border p-2">Layak</th>
                 <th className="border p-2">Tidak Layak</th>
-                <th className="border p-2">Aksi</th>
+                <th className="border p-2 no-print">Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -221,7 +228,7 @@ const Page = () => {
                   <td className="border p-2">{item.quantity}</td>
                   <td className="border p-2">{item.layak}</td>
                   <td className="border p-2">{item.tidak_layak}</td>
-                  <td className="border p-2 flex gap-2">
+                  <td className="border p-2 flex gap-2 no-print">
                     <button onClick={() => handleEdit(item)} className="px-3 py-1 transition-all ease-in-out duration-500 bg-indigo-600 hover:scale-105 hover:bg-indigo-700 text-white rounded">
                       Edit
                     </button>
@@ -235,24 +242,32 @@ const Page = () => {
           </table>
 
           {/* 🔹 Form Tambah/Edit */}
-          {showForm && (
-            <motion.ul initial="hidden" animate="visible" exit="hidden" variants={variants} transition={{ duration: 0.3, ease: "easeInOut" }}>
-              <div className="mt-6 ">
-                <h1 className=" flex justify-center text-2xl font-bold mb-4">Manajemen Barang</h1>
-                <form onSubmit={handleSubmit} className="mb-4 p-4 border rounded-lg bg-gray-100">
-                  <div className="grid grid-cols-2 gap-4">
-                    <input type="text" name="nama" value={form.nama} onChange={handleChange} placeholder="Nama Barang" className="p-2 border rounded" />
-                    <input type="text" name="quantity" value={form.quantity} onChange={handleChange} placeholder="Quantity" className="p-2 border rounded" />
-                    <input type="number" name="layak" value={form.layak} onChange={handleChange} placeholder="Layak" className="p-2 border rounded" />
-                    <input type="number" name="tidak_layak" value={form.tidak_layak} onChange={handleChange} placeholder="Tidak Layak" className="p-2 border rounded" />
-                  </div>
-                  <button type="submit" className="mt-2 px-4 py-2 bg-blue-500 text-white rounded">
-                    {isEditing ? "Update" : "Tambah"}
-                  </button>
-                </form>
-              </div>
-            </motion.ul>
-          )}
+          <AnimatePresence>
+            {showForm && (
+              <motion.div initial="hidden" animate="visible" exit="exit" variants={variants} transition={{ duration: 0.3, ease: "easeInOut" }}>
+                <div className="mt-6 ">
+                  <h1 className=" flex justify-center text-2xl font-bold mb-4">Manajemen Barang</h1>
+                  <form onSubmit={handleSubmit} className="mb-4 p-4 border rounded-lg bg-gray-100">
+                    <div className="grid grid-cols-2 gap-4">
+                      <input type="text" name="nama" value={form.nama} onChange={handleChange} placeholder="Nama Barang" className="p-2 border rounded" />
+                      <input type="text" name="quantity" value={form.quantity} onChange={handleChange} placeholder="Quantity" className="p-2 border rounded" />
+                      <input type="number" name="layak" value={form.layak} onChange={handleChange} placeholder="Layak" className="p-2 border rounded" />
+                      <input type="number" name="tidak_layak" value={form.tidak_layak} onChange={handleChange} placeholder="Tidak Layak" className="p-2 border rounded" />
+                    </div>
+                    <button type="submit" className="mt-2 px-4 py-2 bg-blue-500 text-white rounded">
+                      {isEditing ? "Update" : "Tambah"}
+                    </button>
+                  </form>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <div className="absolute bottom-0 right-0 m-2 no-print">
+          <button className="w-13 h-10 p-2 bg-red-500 text-white rounded no-print" onClick={handlePrint}>
+            print
+          </button>
         </div>
       </div>
     </div>

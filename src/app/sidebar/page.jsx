@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChartLine, faEnvelope, faPrint, faRightFromBracket, faWarehouse, faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import { faChartLine, faEnvelope, faRightFromBracket, faWarehouse, faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
 
 const Sidebar = () => {
@@ -11,12 +11,13 @@ const Sidebar = () => {
   const dropdownRef = useRef(null);
 
   return (
-    <div className="flex flex-col w-80 sticky top-0 left-0 bg-gray-800 h-screen overflow-y-hidden">
-      <div className="text-white mt-2 mx-5 p-2 w-24 h-24">
-        <img src="/Image/logo.png" alt="logo sekolah" />
+    <div className="flex flex-col w-80 min-w-80 sticky top-0 left-0 bg-gray-800 h-screen overflow-y-hidden">
+      <div className="flex items-center mt-4 mb-7">
+        <div className="text-white  mx-2 p-1 w-14 h-14">
+          <img src="/Image/logo.png" alt="logo sekolah" />
+        </div>
+        <span className="text-xl font-bold mx-1 p-1 text-white">MTS MIFTAAHUL ULUM</span>
       </div>
-      <span className="text-xl font-bold mx-4 p-4 text-white">MTS MIFTAAHUL ULUM</span>
-
       <Link href="/dashboard" className="text-white hover:bg-gray-900 hover:rounded-xl p-4 font-medium text-2xl my-2 mx-3 flex items-center">
         <FontAwesomeIcon icon={faChartLine} className="w-5 h-5 mx-3" />
         <span> Dashboard</span>
@@ -42,22 +43,15 @@ const Sidebar = () => {
           <Link href="/sarpras" className="block text-white hover:bg-gray-900 hover:rounded-xl p-2 text-lg">
             Ruang Kelas
           </Link>
-          <Link href="/sarpras" className="block text-white hover:bg-gray-900 hover:rounded-xl p-2 text-lg">
-            Ruang Guru
-          </Link>
-          <Link href="/sarpras" className="block text-white hover:bg-gray-900 hover:rounded-xl p-2 text-lg">
-            Ruang lainnya
+          <Link href="/lainnya" className="block text-white hover:bg-gray-900 hover:rounded-xl p-2 text-lg">
+            Ruang Lainnya
           </Link>
         </div>
       </div>
 
-      <Link href="#" className="text-white hover:bg-gray-900 hover:rounded-xl p-4 font-medium text-2xl my-2 mx-3 flex items-center">
+      <Link href="/usulan" className="text-white hover:bg-gray-900 hover:rounded-xl p-4 font-medium text-2xl my-2 mx-3 flex items-center">
         <FontAwesomeIcon icon={faEnvelope} className="w-5 h-5 mx-3" />
         Usulan
-      </Link>
-      <Link href="#" className="text-white hover:bg-gray-900 hover:rounded-xl p-4 font-medium text-2xl my-2 mx-3 flex items-center">
-        <FontAwesomeIcon icon={faPrint} className="w-5 h-5 mx-3" />
-        Print
       </Link>
 
       <button
@@ -70,6 +64,8 @@ const Sidebar = () => {
         <FontAwesomeIcon icon={faRightFromBracket} className="w-5 h-5 mx-3" />
         Logout
       </button>
+
+      <p className="absolute bottom-0 italic font-mono text-white m-4">&copy; MTS MIFTAAHUL ULUM </p>
     </div>
   );
 };

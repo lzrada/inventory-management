@@ -31,7 +31,7 @@ const Page = () => {
   // 🔸 Fungsi untuk mengambil data dari API
   const fetchItems = async () => {
     try {
-      const res = await axios.get("/api/kelas/ix/b");
+      const res = await axios.get("/api/kelas/vii/a");
       setItems(res.data);
     } catch (error) {
       console.error("Gagal mengambil data:", error);
@@ -54,11 +54,11 @@ const Page = () => {
     try {
       if (isEditing) {
         // Jika sedang edit, update data
-        await axios.put("/api/kelas/ix/b", form);
+        await axios.put("/api/kelas/vii/a", form);
         Swal.fire("Success", "Data berhasil diperbarui!", "success");
       } else {
         // Jika bukan edit, tambah data baru
-        await axios.post("/api/kelas/ix/b", form);
+        await axios.post("/api/kelas/vii/a", form);
         Swal.fire("Success", "Data berhasil ditambahkan!", "success");
       }
       fetchItems(); // Refresh data setelah update
@@ -75,20 +75,20 @@ const Page = () => {
   const handleDelete = async (id) => {
     Swal.fire({
       title: "Are you sure?",
-      text: "Data yang dihapus akan hilang,Apakah anda yakin!",
+      text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, saya yakin menghapusnya!",
+      confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete("/api/kelas/ix/b", { data: { id } });
+          await axios.delete("/api/kelas/vii/a", { data: { id } });
           fetchItems(); // Refresh data
           Swal.fire({
             title: "Deleted!",
-            text: "Data telah berhasil dihapus.",
+            text: "Your file has been deleted.",
             icon: "success",
           });
         } catch (error) {
@@ -179,6 +179,18 @@ const Page = () => {
                   <Link href={"/sarpras/kelas/ix"}>
                     <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas IX</li>
                   </Link>
+                  <Link href={"/sarpras/kelas/ix"}>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas IX</li>
+                  </Link>
+                  <Link href={"/sarpras/kelas/ix"}>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas IX</li>
+                  </Link>
+                  <Link href={"/sarpras/kelas/ix"}>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas IX</li>
+                  </Link>
+                  <Link href={"/sarpras/kelas/ix"}>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas IX</li>
+                  </Link>
                 </motion.ul>
               )}
             </AnimatePresence>
@@ -192,18 +204,15 @@ const Page = () => {
 
         {/* ruang kelas */}
         <div className="gap-3 flex mt-4">
-          <Link href={"/sarpras/kelas/ix"} className="flex w-9 h-9 rounded-xl border border-gray-500 justify-center items-center cursor-pointer hover:bg-gray-100 ">
+          <Link href={"/sarpras"} className="flex w-9 h-9 rounded-xl border border-gray-500 justify-center items-center cursor-pointer hover:bg-gray-100 ">
             A
           </Link>
-          <Link href={"/sarpras/kelas/ix/b"} className="flex w-9 h-9 rounded-xl border border-gray-500 justify-center items-center cursor-pointer hover:bg-gray-100 ">
+          <Link href={"/sarpras/kelas/vii/b"} className="flex w-9 h-9 rounded-xl border border-gray-500 justify-center items-center cursor-pointer hover:bg-gray-100 ">
             B
-          </Link>
-          <Link href={"/sarpras/kelas/ix/c"} className="flex w-9 h-9 rounded-xl border border-gray-500 justify-center items-center cursor-pointer hover:bg-gray-100 ">
-            C
           </Link>
         </div>
         {/* Tabel Ruangan */}
-        <h2 className="flex justify-center text-3xl font-bold my-3">Data Kelas IX B</h2>
+        <h2 className="flex justify-center text-3xl font-bold my-3">Data Ruang Guru</h2>
         <div className="overflow-x-auto mt-6 w-full">
           <table className="w-full border-collapse border border-gray-300">
             <thead>
@@ -240,7 +249,7 @@ const Page = () => {
           {/* 🔹 Form Tambah/Edit */}
           <AnimatePresence>
             {showForm && (
-              <motion.ul initial="hidden" animate="visible" exit="exit" variants={variants} transition={{ duration: 0.3, ease: "easeInOut" }}>
+              <motion.div initial="hidden" animate="visible" exit="exit" variants={variants} transition={{ duration: 0.3, ease: "easeInOut" }}>
                 <div className="mt-6 ">
                   <h1 className=" flex justify-center text-2xl font-bold mb-4">Manajemen Barang</h1>
                   <form onSubmit={handleSubmit} className="mb-4 p-4 border rounded-lg bg-gray-100">
@@ -255,7 +264,7 @@ const Page = () => {
                     </button>
                   </form>
                 </div>
-              </motion.ul>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>

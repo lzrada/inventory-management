@@ -238,24 +238,26 @@ const Page = () => {
           </table>
 
           {/* 🔹 Form Tambah/Edit */}
-          {showForm && (
-            <motion.ul initial="hidden" animate="visible" exit="hidden" variants={variants} transition={{ duration: 0.3, ease: "easeInOut" }}>
-              <div className="mt-6 ">
-                <h1 className=" flex justify-center text-2xl font-bold mb-4">Manajemen Barang</h1>
-                <form onSubmit={handleSubmit} className="mb-4 p-4 border rounded-lg bg-gray-100">
-                  <div className="grid grid-cols-2 gap-4">
-                    <input type="text" name="nama" value={form.nama} onChange={handleChange} placeholder="Nama Barang" className="p-2 border rounded" />
-                    <input type="text" name="quantity" value={form.quantity} onChange={handleChange} placeholder="Quantity" className="p-2 border rounded" />
-                    <input type="number" name="layak" value={form.layak} onChange={handleChange} placeholder="Layak" className="p-2 border rounded" />
-                    <input type="number" name="tidak_layak" value={form.tidak_layak} onChange={handleChange} placeholder="Tidak Layak" className="p-2 border rounded" />
-                  </div>
-                  <button type="submit" className="mt-2 px-4 py-2 bg-blue-500 text-white rounded">
-                    {isEditing ? "Update" : "Tambah"}
-                  </button>
-                </form>
-              </div>
-            </motion.ul>
-          )}
+          <AnimatePresence>
+            {showForm && (
+              <motion.ul initial="hidden" animate="visible" exit="exit" variants={variants} transition={{ duration: 0.3, ease: "easeInOut" }}>
+                <div className="mt-6 ">
+                  <h1 className=" flex justify-center text-2xl font-bold mb-4">Manajemen Barang</h1>
+                  <form onSubmit={handleSubmit} className="mb-4 p-4 border rounded-lg bg-gray-100">
+                    <div className="grid grid-cols-2 gap-4">
+                      <input type="text" name="nama" value={form.nama} onChange={handleChange} placeholder="Nama Barang" className="p-2 border rounded" />
+                      <input type="text" name="quantity" value={form.quantity} onChange={handleChange} placeholder="Quantity" className="p-2 border rounded" />
+                      <input type="number" name="layak" value={form.layak} onChange={handleChange} placeholder="Layak" className="p-2 border rounded" />
+                      <input type="number" name="tidak_layak" value={form.tidak_layak} onChange={handleChange} placeholder="Tidak Layak" className="p-2 border rounded" />
+                    </div>
+                    <button type="submit" className="mt-2 px-4 py-2 bg-blue-500 text-white rounded">
+                      {isEditing ? "Update" : "Tambah"}
+                    </button>
+                  </form>
+                </div>
+              </motion.ul>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>
