@@ -3,15 +3,20 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import jwt from "jsonwebtoken";
-
+import Loading from "../loading";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const router = useRouter();
   const [userData, setUserData] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // Mulai loading
+    setError(null); // Reset error
+
     try {
       const response = await fetch("/../api/login", {
         method: "POST",
@@ -36,9 +41,10 @@ export default function Login() {
       }
     } catch (err) {
       setError(err.message || "An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false); // Selesai loading
     }
   };
-
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -57,6 +63,9 @@ export default function Login() {
       router.push("/login");
     }
   }, []);
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="relative w-full h-screen flex items-center justify-center bg-gray-900">

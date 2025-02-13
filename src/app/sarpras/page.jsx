@@ -193,7 +193,10 @@ const Page = () => {
 
             {/* Bagian Kelas */}
           </div>
-          <button onClick={handleAddNew} className=" bg-indigo-600 rounded-md w-24 h-11 text-sm border border-white p-2 items-center justify-center transition-all ease-in-out duration-500 text-white hover:bg-indigo-700 hover:scale-105 ">
+          <button
+            onClick={handleAddNew}
+            className=" bg-indigo-600 rounded-md w-24 h-11 text-sm border border-white p-2 items-center justify-center transition-all shadow-xl ease-in-out duration-500 text-white hover:bg-indigo-700 hover:scale-105 "
+          >
             Add New
           </button>
         </div>
