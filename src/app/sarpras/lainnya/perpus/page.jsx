@@ -31,7 +31,7 @@ const Page = () => {
   // 🔸 Fungsi untuk mengambil data dari API
   const fetchItems = async () => {
     try {
-      const res = await axios.get("/api/kelas/viii/a");
+      const res = await axios.get("/api/lainnya/perpus");
       setItems(res.data);
     } catch (error) {
       console.error("Gagal mengambil data:", error);
@@ -54,11 +54,11 @@ const Page = () => {
     try {
       if (isEditing) {
         // Jika sedang edit, update data
-        await axios.put("/api/kelas/viii/a", form);
+        await axios.put("/api/lainnya/perpus", form);
         Swal.fire("Success", "Data berhasil diperbarui!", "success");
       } else {
         // Jika bukan edit, tambah data baru
-        await axios.post("/api/kelas/viii/a", form);
+        await axios.post("/api/lainnya/perpus", form);
         Swal.fire("Success", "Data berhasil ditambahkan!", "success");
       }
       fetchItems(); // Refresh data setelah update
@@ -84,7 +84,7 @@ const Page = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete("/api/kelas/viii/a", { data: { id } });
+          await axios.delete("/api/lainnya/perpus", { data: { id } });
           fetchItems(); // Refresh data
           Swal.fire({
             title: "Deleted!",
@@ -168,16 +168,28 @@ const Page = () => {
                   transition={{ duration: 0.3, ease: "easeInOut" }}
                   className="absolute left-0 w-44 mt-2 origin-top-right bg-white border border-gray-300 rounded-md shadow-lg"
                 >
-                  <Link href={"/sarpras"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas VII</li>
+                  <Link href={"/sarpras/lainnya"}>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang Guru</li>
                   </Link>
 
-                  <Link href={"/sarpras/kelas/viii"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas VIII</li>
+                  <Link href={"/sarpras/lainnya/uks"}>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang Uks</li>
                   </Link>
 
-                  <Link href={"/sarpras/kelas/ix"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas IX</li>
+                  <Link href={"/sarpras/lainnya/bk"}>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang BK</li>
+                  </Link>
+                  <Link href={"/sarpras/lainnya/meet"}>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang Meet</li>
+                  </Link>
+                  <Link href={"/sarpras/lainnya/perpus"}>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang Perpus</li>
+                  </Link>
+                  <Link href={"/sarpras/lainnya/labkom"}>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang Labkom</li>
+                  </Link>
+                  <Link href={"/sarpras/lainnya/musik"}>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang Musik</li>
                   </Link>
                 </motion.ul>
               )}
@@ -190,20 +202,8 @@ const Page = () => {
           </button>
         </div>
 
-        {/* ruang kelas */}
-        <div className="gap-3 flex mt-4">
-          <Link href={"/sarpras/kelas/viii"} className="flex w-9 h-9 rounded-xl border border-gray-500 justify-center items-center cursor-pointer hover:bg-gray-100 ">
-            A
-          </Link>
-          <Link href={"/sarpras/kelas/viii/b"} className="flex w-9 h-9 rounded-xl border border-gray-500 justify-center items-center cursor-pointer hover:bg-gray-100 ">
-            B
-          </Link>
-          <Link href={"/sarpras/kelas/viii/c"} className="flex w-9 h-9 rounded-xl border border-gray-500 justify-center items-center cursor-pointer hover:bg-gray-100 ">
-            C
-          </Link>
-        </div>
         {/* Tabel Ruangan */}
-        <h2 className="flex justify-center text-3xl font-bold my-3">Data Kelas VIII A</h2>
+        <h2 className="flex justify-center text-3xl font-bold my-3">Data Ruang Perpus</h2>
         <div className="overflow-x-auto mt-6 w-full">
           <table className="w-full border-collapse border border-gray-300">
             <thead>
@@ -238,6 +238,7 @@ const Page = () => {
           </table>
 
           {/* 🔹 Form Tambah/Edit */}
+          {/* Modal overlay untuk form Add New / Edit */}
           <AnimatePresence>
             {showForm && (
               <motion.div

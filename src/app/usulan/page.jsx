@@ -160,8 +160,8 @@ const Usulan = () => {
   };
 
   return (
-    <>
-      <div className="flex ">
+    <div>
+      <div className="flex">
         <div className="no-print">
           <Sidebar />
         </div>
@@ -169,7 +169,7 @@ const Usulan = () => {
           <h2 className="flex justify-center text-3xl font-bold ">Data Usulan Barang</h2>
           <div className="flex justify-between">
             <div className="no-print">
-              <button onClick={handlePrint} className=" flex ml-3 w-22 justify-center p-3 items-center h-8 rounded-md bg-indigo-600 text-white hover:bg-indigo-700  active:scale-90 transition-all duration-300 ease-in-out ">
+              <button onClick={handlePrint} className=" flex ml-3 w-22 justify-center p-3 items-center h-8 rounded-md bg-indigo-600 text-white hover:bg-indigo-700   active:scale-90 transition-all duration-300 ease-in-out ">
                 Print
               </button>
             </div>
@@ -206,10 +206,10 @@ const Usulan = () => {
                     <td className="border p-2">{item.keperluan}</td>
                     <td className="border p-2">{item.status}</td>
                     <td className="border p-2 flex gap-2 no-print ">
-                      <button onClick={() => handleEdit(item)} className="px-3  transition-all ease-in-out duration-500 bg-indigo-600 hover:scale-105 hover:bg-indigo-700 text-white rounded">
+                      <button onClick={() => handleEdit(item)} className=" px-2 py-1 transition-all ease-in-out duration-500 bg-indigo-600 hover:scale-105 hover:bg-indigo-700 text-white rounded">
                         Edit
                       </button>
-                      <button onClick={() => handleDelete(item.id)} className="px-3 transition-all ease-in-out duration-500 bg-red-500 hover:scale-105 hover:bg-red-600 text-white rounded">
+                      <button onClick={() => handleDelete(item.id)} className=" py-1 px-2 transition-all ease-in-out duration-500 bg-red-500 hover:scale-105 hover:bg-red-600 text-white rounded">
                         Delete
                       </button>
                     </td>
@@ -220,8 +220,20 @@ const Usulan = () => {
 
             <AnimatePresence>
               {showForm && (
-                <motion.div initial="hidden" animate="visible" exit="exit" variants={variants} transition={{ duration: 0.3, ease: "easeInOut" }}>
-                  <div className="mt-6 ">
+                <motion.div
+                  className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
+                  <motion.div
+                    className="bg-gray-100 p-6 rounded-lg shadow-xl w-full max-w-lg mx-4"
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.9, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                  >
                     <h1 className=" flex justify-center text-2xl font-bold mb-4 ">Manajemen Barang</h1>
                     <form onSubmit={handleSubmit} className="mb-4 p-4 border rounded-lg bg-gray-100">
                       <div className="grid grid-cols-2 gap-4">
@@ -232,18 +244,23 @@ const Usulan = () => {
                         <input type="text" name="keperluan" value={form.keperluan} onChange={handleChange} placeholder="keperluan" className="p-2 border rounded" />
                         <input type="text" name="status" value={form.status} onChange={handleChange} placeholder="status" className="p-2 border rounded" />
                       </div>
-                      <button type="submit" className="mt-2 px-4 py-2 bg-blue-500 text-white rounded">
-                        {isEditing ? "Update" : "Tambah"}
-                      </button>
+                      <div className="flex justify-between mt-4">
+                        <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500">
+                          Cancel
+                        </button>
+                        <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                          {isEditing ? "Update" : "Tambah"}
+                        </button>
+                      </div>
                     </form>
-                  </div>
+                  </motion.div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 export default Usulan;

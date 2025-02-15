@@ -31,7 +31,7 @@ const Page = () => {
   // 🔸 Fungsi untuk mengambil data dari API
   const fetchItems = async () => {
     try {
-      const res = await axios.get("/api/kelas/vii/a");
+      const res = await axios.get("/api/lainnya/bk");
       setItems(res.data);
     } catch (error) {
       console.error("Gagal mengambil data:", error);
@@ -54,11 +54,11 @@ const Page = () => {
     try {
       if (isEditing) {
         // Jika sedang edit, update data
-        await axios.put("/api/kelas/vii/a", form);
+        await axios.put("/api/lainnya/bk", form);
         Swal.fire("Success", "Data berhasil diperbarui!", "success");
       } else {
         // Jika bukan edit, tambah data baru
-        await axios.post("/api/kelas/vii/a", form);
+        await axios.post("/api/lainnya/bk", form);
         Swal.fire("Success", "Data berhasil ditambahkan!", "success");
       }
       fetchItems(); // Refresh data setelah update
@@ -84,7 +84,7 @@ const Page = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete("/api/kelas/vii/a", { data: { id } });
+          await axios.delete("/api/lainnya/bk", { data: { id } });
           fetchItems(); // Refresh data
           Swal.fire({
             title: "Deleted!",
@@ -168,28 +168,28 @@ const Page = () => {
                   transition={{ duration: 0.3, ease: "easeInOut" }}
                   className="absolute left-0 w-44 mt-2 origin-top-right bg-white border border-gray-300 rounded-md shadow-lg"
                 >
-                  <Link href={"/sarpras"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas VII</li>
+                  <Link href={"/sarpras/lainnya"}>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang Guru</li>
                   </Link>
 
-                  <Link href={"/sarpras/kelas/viii"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas VIII</li>
+                  <Link href={"/sarpras/lainnya/uks"}>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang Uks</li>
                   </Link>
 
-                  <Link href={"/sarpras/kelas/ix"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas IX</li>
+                  <Link href={"/sarpras/lainnya/bk"}>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang BK</li>
                   </Link>
-                  <Link href={"/sarpras/kelas/ix"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas IX</li>
+                  <Link href={"/sarpras/lainnya/meet"}>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang Meet</li>
                   </Link>
-                  <Link href={"/sarpras/kelas/ix"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas IX</li>
+                  <Link href={"/sarpras/lainnya/perpus"}>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang Perpus</li>
                   </Link>
-                  <Link href={"/sarpras/kelas/ix"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas IX</li>
+                  <Link href={"/sarpras/lainnya/labkom"}>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang Labkom</li>
                   </Link>
-                  <Link href={"/sarpras/kelas/ix"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas IX</li>
+                  <Link href={"/sarpras/lainnya/musik"}>
+                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang Musik</li>
                   </Link>
                 </motion.ul>
               )}
@@ -202,17 +202,8 @@ const Page = () => {
           </button>
         </div>
 
-        {/* ruang kelas */}
-        <div className="gap-3 flex mt-4">
-          <Link href={"/sarpras"} className="flex w-9 h-9 rounded-xl border border-gray-500 justify-center items-center cursor-pointer hover:bg-gray-100 ">
-            A
-          </Link>
-          <Link href={"/sarpras/kelas/vii/b"} className="flex w-9 h-9 rounded-xl border border-gray-500 justify-center items-center cursor-pointer hover:bg-gray-100 ">
-            B
-          </Link>
-        </div>
         {/* Tabel Ruangan */}
-        <h2 className="flex justify-center text-3xl font-bold my-3">Data Ruang Guru</h2>
+        <h2 className="flex justify-center text-3xl font-bold my-3">Data Ruang BK</h2>
         <div className="overflow-x-auto mt-6 w-full">
           <table className="w-full border-collapse border border-gray-300">
             <thead>
@@ -247,23 +238,41 @@ const Page = () => {
           </table>
 
           {/* 🔹 Form Tambah/Edit */}
+          {/* Modal overlay untuk form Add New / Edit */}
           <AnimatePresence>
             {showForm && (
-              <motion.div initial="hidden" animate="visible" exit="exit" variants={variants} transition={{ duration: 0.3, ease: "easeInOut" }}>
-                <div className="mt-6 ">
-                  <h1 className=" flex justify-center text-2xl font-bold mb-4">Manajemen Barang</h1>
-                  <form onSubmit={handleSubmit} className="mb-4 p-4 border rounded-lg bg-gray-100">
+              <motion.div
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <motion.div
+                  className="bg-gray-100 p-6 rounded-lg shadow-xl w-full max-w-lg mx-4"
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.9, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
+                  <h1 className="flex justify-center text-2xl font-bold mb-4">Manajemen Barang</h1>
+                  <form onSubmit={handleSubmit} className="mb-4">
                     <div className="grid grid-cols-2 gap-4">
                       <input type="text" name="nama" value={form.nama} onChange={handleChange} placeholder="Nama Barang" className="p-2 border rounded" />
                       <input type="text" name="quantity" value={form.quantity} onChange={handleChange} placeholder="Quantity" className="p-2 border rounded" />
                       <input type="number" name="layak" value={form.layak} onChange={handleChange} placeholder="Layak" className="p-2 border rounded" />
                       <input type="number" name="tidak_layak" value={form.tidak_layak} onChange={handleChange} placeholder="Tidak Layak" className="p-2 border rounded" />
                     </div>
-                    <button type="submit" className="mt-2 px-4 py-2 bg-blue-500 text-white rounded">
-                      {isEditing ? "Update" : "Tambah"}
-                    </button>
+                    <div className="flex justify-between mt-4">
+                      <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500">
+                        Cancel
+                      </button>
+                      <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        {isEditing ? "Update" : "Tambah"}
+                      </button>
+                    </div>
                   </form>
-                </div>
+                </motion.div>
               </motion.div>
             )}
           </AnimatePresence>

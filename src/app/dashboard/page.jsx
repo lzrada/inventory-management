@@ -1,7 +1,7 @@
 "use client";
-import { faFile, faLandmark, faCalendar } from "@fortawesome/free-solid-svg-icons";
-import Sidebar from "../sidebar/page";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFile, faLandmark, faCalendar } from "@fortawesome/free-solid-svg-icons"; //icons
+import Sidebar from "../sidebar/page"; //component
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //icons
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import jwt from "jsonwebtoken";
@@ -13,6 +13,7 @@ import { format } from "date-fns";
 const Dashboard = () => {
   const [userData, setUserData] = useState(null);
   const [usulanCount, setUsulanCount] = useState(0);
+  const [totalDocCount, setTotalDocCount] = useState(0);
   const router = useRouter();
 
   // State untuk waktu
@@ -61,6 +62,24 @@ const Dashboard = () => {
     fetchUsulanCount();
   }, []);
 
+  useEffect(() => {
+    const fetchTotalDocCount = async () => {
+      try {
+        // Tentukan daftar koleksi yang ada di database Anda
+        const collectionsToCount = ["usulan", "vii_a", "vii_b", "viii_a", "viii_b", "viii_c", "ix_a", "ix_b", "ix_c"]; // Tambahkan nama koleksi lain jika ada
+        let totalCount = 0;
+        for (const collName of collectionsToCount) {
+          const querySnapshot = await getDocs(collection(db, collName));
+          totalCount += querySnapshot.size;
+        }
+        setTotalDocCount(totalCount);
+      } catch (error) {
+        console.error("Gagal mengambil total dokumen:", error);
+      }
+    };
+
+    fetchTotalDocCount();
+  }, []);
   return (
     <>
       <div className="flex">
@@ -70,19 +89,19 @@ const Dashboard = () => {
             <div className="flex justify-center items-center mt-3">
               <FontAwesomeIcon icon={faLandmark} className="w-10 h-10" />
             </div>
-            <div className="flex justify-center items-center p-4 font-thin italic">jumlah ruangan tersedia sebanyak : {/* ambil dari backend */} </div>
+            <div className="flex justify-center items-center p-4 font-thin italic">jumlah seluruh data barang sebanyak : {totalDocCount} Data</div>
           </div>
           <div className="w-60 h-44 bg-yellow-400 shadow-2xl rounded">
             <div className="flex justify-center items-center mt-3">
               <FontAwesomeIcon icon={faFile} className="w-10 h-10 " />
             </div>
-            <div className="flex justify-center items-center p-4 font-thin italic">jumlah usulan tersedia sebanyak : {usulanCount} </div>
+            <div className="flex justify-center items-center p-4 font-thin italic">jumlah usulan tersedia sebanyak : {usulanCount} Data </div>
           </div>
           <div className="w-60 h-44 bg-green-500 shadow-2xl rounded">
             <div className="flex justify-center items-center mt-3">
               <FontAwesomeIcon icon={faCalendar} className="w-10 h-10 " />
             </div>
-            <div className="flex justify-center items-center p-4 font-thin italic">tanggal dan waktu sekarang : {time ? format(time, "dd/MM/yyyy HH:mm:ss") : "Loading..."}</div>
+            <div className="flex justify-center items-center p-4 font-thin italic">tanggal dan waktu sekarang : {time ? format(time, "dd/MM/yyyy HH:mm:ss") : "Loading..."} WIB</div>
           </div>
         </div>
         <div className="absolute top-1/2 left-1/2  transform -translate-x-2.5 -translate-y-1/2 -z-10">
@@ -90,8 +109,8 @@ const Dashboard = () => {
         </div>
 
         <div className="fixed bottom-0 -z-10 bg-[#1D1616] w-full h-8 text-white">
-          <marquee behavior="" direction="left">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo excepturi velit, amet quod ratione, fugiat, dolorum dicta recusandae cupiditate quo molestias quaerat quasi et quam. Omnis mollitia sunt vel consectetur!
+          <marquee behavior="" direction="left" className="text-green-300 font-serif">
+            Visi : "Terwujudnya Madrasah yang melahirkan sumberdaya manusia berahklak terpuji,berkebangsaan,berkemandirian,Modern,dan berkeumatan dengan prinsip aswaja"
           </marquee>
         </div>
       </div>

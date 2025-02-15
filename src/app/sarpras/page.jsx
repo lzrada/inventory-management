@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { motion, AnimatePresence } from "framer-motion"; // Tambahkan AnimatePresence
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 const Page = () => {
@@ -20,15 +20,15 @@ const Page = () => {
   const variants = {
     hidden: { opacity: 0, y: -10 },
     visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -10 }, // Tambahkan animasi exit
+    exit: { opacity: 0, y: -10 },
   };
 
-  // 🔹 Ambil data saat halaman dimuat
+  // Ambil data saat halaman dimuat
   useEffect(() => {
     fetchItems();
   }, []);
 
-  // 🔸 Fungsi untuk mengambil data dari API
+  // Fungsi untuk mengambil data dari API
   const fetchItems = async () => {
     try {
       const res = await axios.get("/api/kelas/vii/a");
@@ -38,12 +38,12 @@ const Page = () => {
     }
   };
 
-  // 🔸 Fungsi untuk menangani input form
+  // Fungsi untuk menangani input form
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // 🔹 Tambah data baru
+  // Tambah data baru / Update data
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.nama || !form.quantity || !form.layak || !form.tidak_layak) {
@@ -71,7 +71,7 @@ const Page = () => {
     }
   };
 
-  // 🔹 Hapus data
+  // Hapus data
   const handleDelete = async (id) => {
     Swal.fire({
       title: "Are you sure?",
@@ -103,26 +103,18 @@ const Page = () => {
     });
   };
 
-  // 🔹 Set form untuk mode edit
+  // Set form untuk mode edit
   const handleEdit = (item) => {
-    if (showForm && isEditing) {
-      setShowForm(false); // Sembunyikan form jika sedang edit
-    } else {
-      setForm(item);
-      setIsEditing(true);
-      setShowForm(true); // Tampilkan form saat edit
-    }
+    setForm(item);
+    setIsEditing(true);
+    setShowForm(true);
   };
 
-  // 🔹 Tampilkan form untuk menambah data baru
+  // Tampilkan form untuk menambah data baru
   const handleAddNew = () => {
-    if (showForm && !isEditing) {
-      setShowForm(false); // Sembunyikan form jika sudah terbuka dan bukan mode edit
-    } else {
-      setForm({ id: "", nama: "", quantity: "", layak: "", tidak_layak: "" });
-      setIsEditing(false);
-      setShowForm(true); // Tampilkan form jika belum terbuka
-    }
+    setForm({ id: "", nama: "", quantity: "", layak: "", tidak_layak: "" });
+    setIsEditing(false);
+    setShowForm(true);
   };
 
   useEffect(() => {
@@ -149,12 +141,12 @@ const Page = () => {
 
   const handlePrint = () => {
     if (typeof window !== "undefined") {
-      // Pastikan window ada
       window.print();
     }
   };
+
   return (
-    <div className="flex">
+    <div className="flex relative">
       <div className="no-print">
         <Sidebar />
       </div>
@@ -163,7 +155,7 @@ const Page = () => {
         <p className="text-xl font-mono no-print">Pilih Data Ruang</p>
         <div className="flex justify-between no-print">
           <div className="relative flex-col text-left mt-3 ">
-            <button onClick={toggleDropdown} className="inline-flex  justify-center w-44 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-100">
+            <button onClick={toggleDropdown} className="inline-flex justify-center w-44 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-100">
               Pilih Opsi
             </button>
             <AnimatePresence>
@@ -171,7 +163,7 @@ const Page = () => {
                 <motion.ul
                   initial="hidden"
                   animate="visible"
-                  exit="exit" // Tambahkan animasi exit
+                  exit="exit"
                   variants={variants}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
                   className="absolute left-0 w-44 mt-2 origin-top-right bg-white border border-gray-300 rounded-md shadow-lg"
@@ -179,33 +171,29 @@ const Page = () => {
                   <Link href={"/sarpras"}>
                     <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas VII</li>
                   </Link>
-
                   <Link href={"/sarpras/kelas/viii"}>
                     <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas VIII</li>
                   </Link>
-
                   <Link href={"/sarpras/kelas/ix"}>
                     <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas IX</li>
                   </Link>
                 </motion.ul>
               )}
             </AnimatePresence>
-
-            {/* Bagian Kelas */}
           </div>
           <button
             onClick={handleAddNew}
-            className=" bg-indigo-600 rounded-md w-24 h-11 text-sm border border-white p-2 items-center justify-center transition-all shadow-xl ease-in-out duration-500 text-white hover:bg-indigo-700 hover:scale-105 "
+            className="bg-indigo-600 rounded-md w-24 h-11 text-sm border border-white p-2 items-center justify-center transition-all shadow-xl ease-in-out duration-500 text-white hover:bg-indigo-700 hover:scale-105"
           >
             Add New
           </button>
         </div>
-        {/* ruang kelas */}
+        {/* Ruang kelas */}
         <div className="gap-3 flex mt-4 no-print">
-          <Link href={"/sarpras"} className="flex w-9 h-9 rounded-xl border border-gray-500 justify-center items-center cursor-pointer hover:bg-gray-100 ">
+          <Link href={"/sarpras"} className="flex w-9 h-9 rounded-xl border border-gray-500 justify-center items-center cursor-pointer hover:bg-gray-100">
             A
           </Link>
-          <Link href={"/sarpras/kelas/vii/b"} className="flex w-9 h-9 rounded-xl border border-gray-500 justify-center items-center cursor-pointer hover:bg-gray-100 ">
+          <Link href={"/sarpras/kelas/vii/b"} className="flex w-9 h-9 rounded-xl border border-gray-500 justify-center items-center cursor-pointer hover:bg-gray-100">
             B
           </Link>
         </div>
@@ -243,28 +231,6 @@ const Page = () => {
               ))}
             </tbody>
           </table>
-
-          {/* 🔹 Form Tambah/Edit */}
-          <AnimatePresence>
-            {showForm && (
-              <motion.div initial="hidden" animate="visible" exit="exit" variants={variants} transition={{ duration: 0.3, ease: "easeInOut" }}>
-                <div className="mt-6 ">
-                  <h1 className=" flex justify-center text-2xl font-bold mb-4">Manajemen Barang</h1>
-                  <form onSubmit={handleSubmit} className="mb-4 p-4 border rounded-lg bg-gray-100">
-                    <div className="grid grid-cols-2 gap-4">
-                      <input type="text" name="nama" value={form.nama} onChange={handleChange} placeholder="Nama Barang" className="p-2 border rounded" />
-                      <input type="text" name="quantity" value={form.quantity} onChange={handleChange} placeholder="Quantity" className="p-2 border rounded" />
-                      <input type="number" name="layak" value={form.layak} onChange={handleChange} placeholder="Layak" className="p-2 border rounded" />
-                      <input type="number" name="tidak_layak" value={form.tidak_layak} onChange={handleChange} placeholder="Tidak Layak" className="p-2 border rounded" />
-                    </div>
-                    <button type="submit" className="mt-2 px-4 py-2 bg-blue-500 text-white rounded">
-                      {isEditing ? "Update" : "Tambah"}
-                    </button>
-                  </form>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
 
         <div className="absolute bottom-0 right-0 m-2 no-print">
@@ -273,6 +239,45 @@ const Page = () => {
           </button>
         </div>
       </div>
+
+      {/* Modal overlay untuk form Add New / Edit */}
+      <AnimatePresence>
+        {showForm && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            <motion.div
+              className="bg-gray-100 p-6 rounded-lg shadow-xl w-full max-w-lg mx-4"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
+              <h1 className="flex justify-center text-2xl font-bold mb-4">Manajemen Barang</h1>
+              <form onSubmit={handleSubmit} className="mb-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <input type="text" name="nama" value={form.nama} onChange={handleChange} placeholder="Nama Barang" className="p-2 border rounded" />
+                  <input type="text" name="quantity" value={form.quantity} onChange={handleChange} placeholder="Quantity" className="p-2 border rounded" />
+                  <input type="number" name="layak" value={form.layak} onChange={handleChange} placeholder="Layak" className="p-2 border rounded" />
+                  <input type="number" name="tidak_layak" value={form.tidak_layak} onChange={handleChange} placeholder="Tidak Layak" className="p-2 border rounded" />
+                </div>
+                <div className="flex justify-between mt-4">
+                  <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500">
+                    Cancel
+                  </button>
+                  <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    {isEditing ? "Update" : "Tambah"}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
