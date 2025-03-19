@@ -16,12 +16,6 @@ const Usulan = () => {
   const [isEditing, setIsEditing] = useState(false); // Status edit
   const [showForm, setShowForm] = useState(false); // State untuk mengontrol visibilitas form
 
-  const variants = {
-    hidden: { opacity: 0, y: -10 },
-    visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -10 }, // Tambahkan animasi exit
-  };
-
   // 🔹 Ambil data saat halaman dimuat
   useEffect(() => {
     fetchItems();
@@ -153,7 +147,7 @@ const Usulan = () => {
     }
   }, []);
 
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
 
   const handlePrint = () => {
     window.print();

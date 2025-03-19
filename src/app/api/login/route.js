@@ -1,6 +1,7 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
 import jwt from "jsonwebtoken";
 import { auth } from "../../services/firebase"; // Pastikan auth sudah diimpor dengan benar
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
   // Ambil email dan password dari body request
@@ -8,7 +9,7 @@ export async function POST(req) {
 
   // Pastikan nilai email dan password tidak kosong
   if (!email || !password) {
-    return new Response(JSON.stringify({ error: "Email and password are required" }), { status: 400, headers: { "Content-Type": "application/json" } });
+    return new NextResponse(JSON.stringify({ error: "Email and password are required" }), { status: 400, headers: { "Content-Type": "application/json" } });
   }
 
   try {
@@ -25,12 +26,12 @@ export async function POST(req) {
 
     // console.log("Generated Token:", token); // Debugging token creation
 
-    return new Response(JSON.stringify({ token }), {
+    return new NextResponse(JSON.stringify({ token }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
     console.error("Login error:", error);
-    return new Response(JSON.stringify({ error: error.message || "Invalid email or password." }), { status: 401, headers: { "Content-Type": "application/json" } });
+    return new NextResponse(JSON.stringify({ error: error.message || "Invalid email or password." }), { status: 401, headers: { "Content-Type": "application/json" } });
   }
 }

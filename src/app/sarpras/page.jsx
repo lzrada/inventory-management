@@ -12,10 +12,10 @@ const Page = () => {
   const [userData, setUserData] = useState(null);
   const router = useRouter();
 
-  const [items, setItems] = useState([]); // Data barang
-  const [form, setForm] = useState({ id: "", nama: "", quantity: "", layak: "", tidak_layak: "" }); // Form input
-  const [isEditing, setIsEditing] = useState(false); // Status edit
-  const [showForm, setShowForm] = useState(false); // State untuk mengontrol visibilitas form
+  const [items, setItems] = useState([]);
+  const [form, setForm] = useState({ id: "", nama: "", quantity: "", layak: "", tidak_layak: "" });
+  const [isEditing, setIsEditing] = useState(false);
+  const [showForm, setShowForm] = useState(false);
 
   const variants = {
     hidden: { opacity: 0, y: -10 },
@@ -28,7 +28,7 @@ const Page = () => {
     fetchItems();
   }, []);
 
-  // Fungsi untuk mengambil data dari API
+  // ambil data dari API
   const fetchItems = async () => {
     try {
       const res = await axios.get("/api/kelas/vii/a");
@@ -38,12 +38,11 @@ const Page = () => {
     }
   };
 
-  // Fungsi untuk menangani input form
+  //  input form
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Tambah data baru / Update data
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.nama || !form.quantity || !form.layak || !form.tidak_layak) {
@@ -53,18 +52,16 @@ const Page = () => {
 
     try {
       if (isEditing) {
-        // Jika sedang edit, update data
         await axios.put("/api/kelas/vii/a", form);
         Swal.fire("Success", "Data berhasil diperbarui!", "success");
       } else {
-        // Jika bukan edit, tambah data baru
         await axios.post("/api/kelas/vii/a", form);
         Swal.fire("Success", "Data berhasil ditambahkan!", "success");
       }
-      fetchItems(); // Refresh data setelah update
+      fetchItems();
       setForm({ id: "", nama: "", quantity: "", layak: "", tidak_layak: "" });
       setIsEditing(false);
-      setShowForm(false); // Sembunyikan form setelah submit
+      setShowForm(false);
     } catch (error) {
       console.error("Gagal menyimpan data:", error);
       Swal.fire("Error", "Gagal menyimpan data!", "error");
@@ -85,7 +82,7 @@ const Page = () => {
       if (result.isConfirmed) {
         try {
           await axios.delete("/api/kelas/vii/a", { data: { id } });
-          fetchItems(); // Refresh data
+          fetchItems();
           Swal.fire({
             title: "Deleted!",
             text: "Your file has been deleted.",
@@ -144,6 +141,12 @@ const Page = () => {
       window.print();
     }
   };
+  useEffect(() => {
+    if (localStorage.getItem("role") !== "admin") {
+      alert("Anda tidak memiliki akses ke halaman ini!");
+      router.push("/keuangan-dashboard");
+    }
+  });
 
   return (
     <div className="flex relative">
@@ -208,18 +211,18 @@ const Page = () => {
                 <th className="border p-2">Quantity</th>
                 <th className="border p-2">Layak</th>
                 <th className="border p-2">Tidak Layak</th>
-                <th className="border p-2 no-print">Aksi</th>
+                <th className="border p-2 no-print w-28">Aksi</th>
               </tr>
             </thead>
             <tbody>
               {items.map((item, index) => (
-                <tr key={item.id} className="border">
-                  <td className="border p-2">{index + 1}</td>
-                  <td className="border p-2">{item.nama}</td>
-                  <td className="border p-2">{item.quantity}</td>
-                  <td className="border p-2">{item.layak}</td>
-                  <td className="border p-2">{item.tidak_layak}</td>
-                  <td className="border p-2 flex gap-2 no-print">
+                <tr key={item.id} className="border text-center">
+                  <td className="border align-middle p-2">{index + 1}</td>
+                  <td className="border align-middle p-2">{item.nama}</td>
+                  <td className="border align-middle p-2">{item.quantity}</td>
+                  <td className="border align-middle p-2">{item.layak}</td>
+                  <td className="border align-middle p-2">{item.tidak_layak}</td>
+                  <td className="border  p-2 flex gap-2 no-print">
                     <button onClick={() => handleEdit(item)} className="px-3 py-1 transition-all ease-in-out duration-500 bg-indigo-600 hover:scale-105 hover:bg-indigo-700 text-white rounded">
                       Edit
                     </button>
@@ -231,12 +234,6 @@ const Page = () => {
               ))}
             </tbody>
           </table>
-        </div>
-
-        <div className="absolute bottom-0 right-0 m-2 no-print">
-          <button className="w-13 h-10 p-2 bg-red-500 text-white rounded no-print" onClick={handlePrint}>
-            print
-          </button>
         </div>
       </div>
 

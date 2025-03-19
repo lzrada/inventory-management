@@ -4,13 +4,14 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import jwt from "jsonwebtoken";
 import Loading from "../loading";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const router = useRouter();
   const [userData, setUserData] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -33,9 +34,16 @@ export default function Login() {
       const data = await response.json(); // Ambil data dari API
 
       if (data.token) {
-        localStorage.setItem("token", data.token); // Menyimpan token ke localStorage
-        console.log("Token disimpan:", data.token); // Debugging token
-        router.push("/dashboard");
+        localStorage.setItem("token", data.token); // Simpan token
+        if (email === "admin@gmail.com" && password === "12345678") {
+          localStorage.setItem("role", "admin");
+          // Jika login sebagai admin
+          router.push("/dashboard");
+        } else {
+          localStorage.setItem("role", "user");
+          // Jika login sebagai user
+          router.push("/dashboard-user");
+        }
       } else {
         setError("Failed to retrieve token. Please try again.");
       }
@@ -45,6 +53,7 @@ export default function Login() {
       setIsLoading(false); // Selesai loading
     }
   };
+
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -54,23 +63,25 @@ export default function Login() {
     }
 
     try {
-      console.log("Token yang diterima:", token); // Log token untuk debugging
-      const decoded = jwt.decode(token); // Decode token tanpa verifikasi secret
-      setUserData(decoded); // Simpan data pengguna dari token
+      const decoded = jwt.decode(token);
+      setUserData(decoded);
     } catch (error) {
-      console.error("Token decoding failed:", error); // Debugging
       localStorage.removeItem("token");
       router.push("/login");
     }
   }, []);
-  if (isLoading) {
-    return <Loading />;
-  }
 
   return (
     <div className="relative w-full h-screen flex items-center justify-center bg-gray-900">
       {/* Background Image */}
       <Image src="/Image/bg.jpeg" fill={true} alt="Background" className="absolute inset-0 object-cover opacity-60" />
+
+      {/* Overlay saat loading */}
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-60 z-50">
+          <Loading />
+        </div>
+      )}
 
       {/* Login Card */}
       <div className="relative z-10 bg-white p-8 rounded-2xl shadow-lg max-w-sm w-full text-center">
@@ -78,20 +89,13 @@ export default function Login() {
         <p className="text-gray-600 text-sm mb-4">Masuk untuk melanjutkan</p>
 
         <form className="space-y-4" onSubmit={handleLogin}>
-          <input type="Email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
           <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-          <button type="submit" className="w-full p-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600  transition duration-300">
+          <button type="submit" className="w-full p-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300">
             Login
           </button>
         </form>
-
-        {/* <p className="text-gray-500 text-sm mt-4">
-          Belum punya akun?{" "}
-          <Link href="/register" className="text-blue-500 hover:underline">
-            Daftar
-          </Link>
-        </p> */}
       </div>
     </div>
   );

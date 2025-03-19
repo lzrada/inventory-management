@@ -89,13 +89,13 @@ const Dashboard = () => {
             <div className="flex justify-center items-center mt-3">
               <FontAwesomeIcon icon={faLandmark} className="w-10 h-10" />
             </div>
-            <div className="flex justify-center items-center p-4 font-thin italic">jumlah seluruh data barang sebanyak : {totalDocCount} Data</div>
+            <div className="flex justify-center items-center p-4 font-thin italic">jumlah seluruh data barang sebanyak : {totalDocCount || "Loading..."} Data</div>
           </div>
           <div className="w-60 h-44 bg-yellow-400 shadow-2xl rounded">
             <div className="flex justify-center items-center mt-3">
               <FontAwesomeIcon icon={faFile} className="w-10 h-10 " />
             </div>
-            <div className="flex justify-center items-center p-4 font-thin italic">jumlah usulan tersedia sebanyak : {usulanCount} Data </div>
+            <div className="flex justify-center items-center p-4 font-thin italic">jumlah usulan tersedia sebanyak : {usulanCount || "Loading..."} Data </div>
           </div>
           <div className="w-60 h-44 bg-green-500 shadow-2xl rounded">
             <div className="flex justify-center items-center mt-3">

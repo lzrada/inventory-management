@@ -210,18 +210,18 @@ const Page = () => {
                 <th className="border p-2">Quantity</th>
                 <th className="border p-2">Layak</th>
                 <th className="border p-2">Tidak Layak</th>
-                <th className="border p-2">Aksi</th>
+                <th className="border p-2 no-print w-28">Aksi</th>
               </tr>
             </thead>
             <tbody>
               {items.map((item, index) => (
-                <tr key={item.id} className="border">
-                  <td className="border p-2">{index + 1}</td>
-                  <td className="border p-2">{item.nama}</td>
-                  <td className="border p-2">{item.quantity}</td>
-                  <td className="border p-2">{item.layak}</td>
-                  <td className="border p-2">{item.tidak_layak}</td>
-                  <td className="border p-2 flex gap-2">
+                <tr key={item.id} className="border text-center">
+                  <td className="border align-middle p-2">{index + 1}</td>
+                  <td className="border align-middle p-2">{item.nama}</td>
+                  <td className="border align-middle p-2">{item.quantity}</td>
+                  <td className="border align-middle p-2">{item.layak}</td>
+                  <td className="border align-middle p-2">{item.tidak_layak}</td>
+                  <td className="border  p-2 flex gap-2 no-print">
                     <button onClick={() => handleEdit(item)} className="px-3 py-1 transition-all ease-in-out duration-500 bg-indigo-600 hover:scale-105 hover:bg-indigo-700 text-white rounded">
                       Edit
                     </button>
