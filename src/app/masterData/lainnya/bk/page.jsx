@@ -31,7 +31,7 @@ const Page = () => {
   // 🔸 Fungsi untuk mengambil data dari API
   const fetchItems = async () => {
     try {
-      const res = await axios.get("/api/lainnya/guru");
+      const res = await axios.get("/api/lainnya/bk");
       setItems(res.data);
     } catch (error) {
       console.error("Gagal mengambil data:", error);
@@ -54,11 +54,11 @@ const Page = () => {
     try {
       if (isEditing) {
         // Jika sedang edit, update data
-        await axios.put("/api/lainnya/guru", form);
+        await axios.put("/api/lainnya/bk", form);
         Swal.fire("Success", "Data berhasil diperbarui!", "success");
       } else {
         // Jika bukan edit, tambah data baru
-        await axios.post("/api/lainnya/guru", form);
+        await axios.post("/api/lainnya/bk", form);
         Swal.fire("Success", "Data berhasil ditambahkan!", "success");
       }
       fetchItems(); // Refresh data setelah update
@@ -84,7 +84,7 @@ const Page = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete("/api/lainnya/guru", { data: { id } });
+          await axios.delete("/api/lainnya/bk", { data: { id } });
           fetchItems(); // Refresh data
           Swal.fire({
             title: "Deleted!",
@@ -203,7 +203,7 @@ const Page = () => {
         </div>
 
         {/* Tabel Ruangan */}
-        <h2 className="flex justify-center text-3xl font-bold my-3">Data Ruang Guru</h2>
+        <h2 className="flex justify-center text-3xl font-bold my-3">Data Ruang BK</h2>
         <div className="overflow-x-auto mt-6 w-full">
           <table className="w-full border-collapse border border-gray-300">
             <thead>

@@ -14,8 +14,16 @@
     transform: rotate(1turn);
   }
 }
+
 @media print {
   .no-print {
     display: none !important;
   }
+  .inventory-print {
+    display: block !important;
+  }
+}
+/* Default: inventory-print disembunyikan di layar */
+.inventory-print {
+  display: none;
 }

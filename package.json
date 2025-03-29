@@ -21,6 +21,7 @@
     "next": "15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-to-print": "^3.0.5",
     "sweetalert2": "^11.15.10"
   },
   "devDependencies": {

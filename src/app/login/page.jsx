@@ -35,15 +35,8 @@ export default function Login() {
 
       if (data.token) {
         localStorage.setItem("token", data.token); // Simpan token
-        if (email === "admin@gmail.com" && password === "12345678") {
-          localStorage.setItem("role", "admin");
-          // Jika login sebagai admin
-          router.push("/dashboard");
-        } else {
-          localStorage.setItem("role", "user");
-          // Jika login sebagai user
-          router.push("/dashboard-user");
-        }
+        // Jika login sebagai admin
+        router.push("/dashboard");
       } else {
         setError("Failed to retrieve token. Please try again.");
       }

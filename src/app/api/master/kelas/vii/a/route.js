@@ -1,10 +1,14 @@
-import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from "firebase/firestore";
+import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc, serverTimestamp, query, orderBy } from "firebase/firestore";
 import db from "@/app/services/firebase";
 
-//  Ambil semua data (GET)
+// GET: Ambil semua data (dengan orderBy)
 export async function GET() {
   try {
-    const snapshot = await getDocs(collection(db, "vii_a"));
+    const q = query(
+      collection(db, "vii_a"),
+      orderBy("createdAt", "asc") // atau "desc"
+    );
+    const snapshot = await getDocs(q);
     const items = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     return Response.json(items, { status: 200 });
   } catch (error) {
@@ -12,44 +16,60 @@ export async function GET() {
   }
 }
 
-//  Tambah data (POST)
+// POST: Tambah data
 export async function POST(req) {
   try {
-    const { nama, quantity, layak, tidak_layak } = await req.json();
-    if (!nama || !quantity || !layak || !tidak_layak) {
+    const { nama, quantity, kategori, layak, tidak_layak, Date } = await req.json();
+    if (!nama || !quantity || !kategori) {
       return Response.json({ message: "Semua field harus diisi" }, { status: 400 });
     }
 
-    //  Tambahkan data ke Firestore, biarkan Firestore membuat ID
+    // Tambahkan data ke Firestore, Firestore akan membuat ID secara otomatis
+    // Sertakan createdAt agar bisa di-order
     const docRef = await addDoc(collection(db, "vii_a"), {
       nama,
       quantity,
+      kategori,
       layak,
       tidak_layak,
+      Date, // Anda masih bisa simpan Date buatan client (opsional)
+      createdAt: serverTimestamp(), // Field untuk penanda waktu server
     });
 
-    return Response.json({ id: docRef.id, nama, quantity, layak, tidak_layak }, { status: 201 });
+    return Response.json(
+      {
+        id: docRef.id,
+        nama,
+        quantity,
+        kategori,
+        layak,
+        tidak_layak,
+        Date,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     return Response.json({ message: "Gagal menambahkan data", error: error.message }, { status: 500 });
   }
 }
 
-//  Update data (PUT)
+// PUT: Update data
 export async function PUT(req) {
   try {
-    const { id, nama, quantity, layak, tidak_layak } = await req.json();
-    if (!id || !nama || !quantity || !layak || !tidak_layak) {
+    const { id, nama, quantity, kategori, layak, tidak_layak } = await req.json();
+    if (!id || !nama || !quantity || !kategori) {
       return Response.json({ message: "Semua field harus diisi" }, { status: 400 });
     }
     const itemDoc = doc(db, "vii_a", id);
-    await updateDoc(itemDoc, { nama, quantity, layak, tidak_layak });
+    // Tidak mengubah field 'Date' dan 'createdAt' agar tanggal pembuatan asli tetap tersimpan
+    await updateDoc(itemDoc, { nama, quantity, kategori, layak, tidak_layak });
     return Response.json({ message: "Data berhasil diperbarui" }, { status: 200 });
   } catch (error) {
     return Response.json({ message: "Gagal memperbarui data", error: error.message }, { status: 500 });
   }
 }
 
-//  Hapus data (DELETE)
+// DELETE: Hapus data
 export async function DELETE(req) {
   try {
     const { id } = await req.json();

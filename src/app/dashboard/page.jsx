@@ -1,6 +1,6 @@
 "use client";
 import { faFile, faLandmark, faCalendar } from "@fortawesome/free-solid-svg-icons"; //icons
-import Sidebar from "../sidebar/page"; //component
+import Sidebar from "@/app/components/Sidebar"; //component
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //icons
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
