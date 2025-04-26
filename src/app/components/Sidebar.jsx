@@ -48,7 +48,7 @@ const Sidebar = () => {
               <Link href="/masterData/kelas/vii/a" className="block text-white hover:bg-gray-900 hover:rounded-xl p-2 text-lg">
                 Ruang Kelas
               </Link>
-              <Link href="/masterData/lainnya" className="block text-white hover:bg-gray-900 hover:rounded-xl p-2 text-lg">
+              <Link href="/masterData/lainnya/guru" className="block text-white hover:bg-gray-900 hover:rounded-xl p-2 text-lg">
                 Ruang Lainnya
               </Link>
             </div>

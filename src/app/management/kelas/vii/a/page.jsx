@@ -7,6 +7,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import DropdownAksi from "@/app/components/management/DropdownAksi";
 
 const Page = () => {
   const [userData, setUserData] = useState(null);
@@ -21,15 +22,9 @@ const Page = () => {
     layak: "",
     tidak_layak: "",
   });
-  const [isEditing, setIsEditing] = useState(false);
+
   const [showForm, setShowForm] = useState(false);
-
-  const variants = {
-    hidden: { opacity: 0, y: -10 },
-    visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -10 },
-  };
-
+  const [isEditing, setIsEditing] = useState(false);
   // Ambil data saat halaman dimuat
   useEffect(() => {
     fetchItems();
@@ -38,7 +33,7 @@ const Page = () => {
   // ambil data dari API
   const fetchItems = async () => {
     try {
-      const res = await axios.get("/api/master/kelas/vii/a");
+      const res = await axios.get("/api/kelas/vii/a");
       setItems(res.data);
     } catch (error) {
       console.error("Gagal mengambil data:", error);
@@ -66,7 +61,7 @@ const Page = () => {
 
     // Hanya mode edit yang digunakan
     const totalValid = Number(form.layak) + Number(form.tidak_layak);
-    if (totalValid > Number(form.quantity)) {
+    if (totalValid > Number(form.quantity) || totalValid < Number(form.quantity)) {
       Swal.fire({
         title: "Terjadi Kesalahan!",
         text: "Jumlah layak dan tidak layak tidak valid!",
@@ -77,7 +72,7 @@ const Page = () => {
 
     try {
       // Lakukan PUT (update) saja, karena tidak ada add new
-      await axios.put("/api/master/kelas/vii/a", form);
+      await axios.put("/api/kelas/vii/a", form);
       Swal.fire("Success", "Data berhasil diperbarui!", "success");
 
       fetchItems();
@@ -116,9 +111,6 @@ const Page = () => {
     }
   }, []);
 
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleDropdown = () => setIsOpen(!isOpen);
-
   return (
     <div className="flex relative">
       <div className="no-print">
@@ -130,39 +122,20 @@ const Page = () => {
 
         <div className="flex justify-between no-print">
           <div className="relative flex-col text-left mt-3">
-            <button onClick={toggleDropdown} className="inline-flex justify-center w-44 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-100">
-              Pilih Opsi
-            </button>
-            <AnimatePresence>
-              {isOpen && (
-                <motion.ul
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  variants={variants}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="absolute left-0 w-44 mt-2 origin-top-right bg-white border border-gray-300 rounded-md shadow-lg"
-                >
-                  <Link href={"/sarpras"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas VII</li>
-                  </Link>
-                  <Link href={"/sarpras/kelas/viii"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas VIII</li>
-                  </Link>
-                  <Link href={"/sarpras/kelas/ix"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas IX</li>
-                  </Link>
-                </motion.ul>
-              )}
-            </AnimatePresence>
+            <DropdownAksi />
+            <div className="flex gap-3">
+              <div className="w-11 h-11 border border-gray-400 rounded-xl mt-4">
+                <Link href="/management/kelas/vii/a" className="w-full h-full flex object-fill items-center justify-center">
+                  A
+                </Link>
+              </div>
+              <div className="w-11 h-11 border border-gray-400 rounded-xl mt-4">
+                <Link href="/management/kelas/vii/b" className="w-full h-full flex object-fill items-center justify-center">
+                  B
+                </Link>
+              </div>
+            </div>
           </div>
-          {/* Hapus tombol Add New */}
-          {/* <button
-            onClick={handleAddNew}
-            className="bg-indigo-600 rounded-md w-24 h-11 text-sm border border-white p-2 items-center justify-center transition-all shadow-xl ease-in-out duration-500 text-white hover:bg-indigo-700 hover:scale-105"
-          >
-            Add New
-          </button> */}
         </div>
 
         {/* Tabel Ruangan */}
@@ -182,7 +155,7 @@ const Page = () => {
             </thead>
             <tbody>
               {items.map((item, index) => (
-                <tr key={item.id} className="border text-center">
+                <tr key={item.id} className="border text-center even:bg-gray-100">
                   <td className="border align-middle p-2">{index + 1}</td>
                   <td className="border align-middle p-2">{item.nama}</td>
                   <td className="border align-middle p-2">{item.kategori}</td>
@@ -193,13 +166,6 @@ const Page = () => {
                     <button onClick={() => handleEdit(item)} className="px-7  flex items-center justify-center py-1 transition-all ease-in-out duration-500 bg-indigo-600 hover:scale-105 hover:bg-indigo-700 text-white rounded">
                       Edit
                     </button>
-                    {/* Hapus tombol Delete */}
-                    {/* <button
-                      onClick={() => handleDelete(item.id)}
-                      className="px-3 py-1 transition-all ease-in-out duration-500 bg-red-500 hover:scale-105 hover:bg-red-600 text-white rounded"
-                    >
-                      Delete
-                    </button> */}
                   </td>
                 </tr>
               ))}

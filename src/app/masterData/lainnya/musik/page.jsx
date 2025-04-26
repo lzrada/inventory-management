@@ -1,34 +1,39 @@
 "use client";
 import { useRouter } from "next/navigation";
-import Sidebar from "@/app/sidebar/page";
+import Sidebar from "@/app/components/Sidebar";
 import { useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { motion, AnimatePresence } from "framer-motion"; // Tambahkan AnimatePresence
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { format } from "date-fns";
+import DropdownLainnya from "@/app/components/master/DropdownLain";
 
 const Page = () => {
   const [userData, setUserData] = useState(null);
   const router = useRouter();
+  const [items, setItems] = useState([]);
+  const [form, setForm] = useState({
+    id: "",
+    nama: "",
+    quantity: "",
+    kategori: "",
+    layak: "", // Default kosong dulu, nanti diisi otomatis
+    tidak_layak: "", // Default kosong dulu, nanti diisi otomatis
+    Date: "", // Field untuk menyimpan tanggal pembuatan
+  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [showForm, setShowForm] = useState(false);
 
-  const [items, setItems] = useState([]); // Data barang
-  const [form, setForm] = useState({ id: "", nama: "", quantity: "", layak: "", tidak_layak: "" }); // Form input
-  const [isEditing, setIsEditing] = useState(false); // Status edit
-  const [showForm, setShowForm] = useState(false); // State untuk mengontrol visibilitas form
+  const [time, setTime] = useState(null);
 
-  const variants = {
-    hidden: { opacity: 0, y: -10 },
-    visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -10 }, // Tambahkan animasi exit
-  };
-
-  // 🔹 Ambil data saat halaman dimuat
+  // Ambil data saat halaman dimuat
   useEffect(() => {
     fetchItems();
   }, []);
 
-  // 🔸 Fungsi untuk mengambil data dari API
+  // ambil data dari API
   const fetchItems = async () => {
     try {
       const res = await axios.get("/api/lainnya/musik");
@@ -38,40 +43,52 @@ const Page = () => {
     }
   };
 
-  // 🔸 Fungsi untuk menangani input form
+  // input form
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prevForm) => ({
+      ...prevForm,
+      [name]: name === "quantity" ? parseInt(value) || 0 : value,
+    }));
   };
 
-  // 🔹 Tambah data baru
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.nama || !form.quantity || !form.layak || !form.tidak_layak) {
+    if (!form.nama || !form.quantity || !form.kategori) {
       alert("Semua field harus diisi!");
       return;
     }
 
+    let payload = {
+      ...form,
+      layak: Number(form.quantity), // Otomatis set layak = quantity
+      tidak_layak: 0, // Default 0
+    };
+
+    // Jika menambah data baru, set tanggal pembuatan
+    if (!isEditing) {
+      payload.Date = format(new Date(), "dd/MM/yyyy HH:mm:ss");
+    }
+
     try {
       if (isEditing) {
-        // Jika sedang edit, update data
-        await axios.put("/api/lainnya/musik", form);
+        await axios.put("/api/lainnya/musik", payload);
         Swal.fire("Success", "Data berhasil diperbarui!", "success");
       } else {
-        // Jika bukan edit, tambah data baru
-        await axios.post("/api/lainnya/musik", form);
+        await axios.post("/api/lainnya/musik", payload);
         Swal.fire("Success", "Data berhasil ditambahkan!", "success");
       }
-      fetchItems(); // Refresh data setelah update
-      setForm({ id: "", nama: "", quantity: "", layak: "", tidak_layak: "" });
+      fetchItems();
+      setForm({ id: "", nama: "", quantity: "", kategori: "", layak: "", tidak_layak: "", Date: "" });
       setIsEditing(false);
-      setShowForm(false); // Sembunyikan form setelah submit
+      setShowForm(false);
     } catch (error) {
       console.error("Gagal menyimpan data:", error);
       Swal.fire("Error", "Gagal menyimpan data!", "error");
     }
   };
 
-  // 🔹 Hapus data
+  // Hapus data
   const handleDelete = async (id) => {
     Swal.fire({
       title: "Are you sure?",
@@ -85,7 +102,7 @@ const Page = () => {
       if (result.isConfirmed) {
         try {
           await axios.delete("/api/lainnya/musik", { data: { id } });
-          fetchItems(); // Refresh data
+          fetchItems();
           Swal.fire({
             title: "Deleted!",
             text: "Your file has been deleted.",
@@ -103,26 +120,18 @@ const Page = () => {
     });
   };
 
-  // 🔹 Set form untuk mode edit
+  // Set form untuk mode edit
   const handleEdit = (item) => {
-    if (showForm && isEditing) {
-      setShowForm(false); // Sembunyikan form jika sedang edit
-    } else {
-      setForm(item);
-      setIsEditing(true);
-      setShowForm(true); // Tampilkan form saat edit
-    }
+    setForm(item);
+    setIsEditing(true);
+    setShowForm(true);
   };
 
-  // 🔹 Tampilkan form untuk menambah data baru
+  // Tampilkan form untuk menambah data baru
   const handleAddNew = () => {
-    if (showForm && !isEditing) {
-      setShowForm(false); // Sembunyikan form jika sudah terbuka dan bukan mode edit
-    } else {
-      setForm({ id: "", nama: "", quantity: "", layak: "", tidak_layak: "" });
-      setIsEditing(false);
-      setShowForm(true); // Tampilkan form jika belum terbuka
-    }
+    setForm({ id: "", nama: "", quantity: "", kategori: "", layak: "", tidak_layak: "", Date: "" });
+    setIsEditing(false);
+    setShowForm(true);
   };
 
   useEffect(() => {
@@ -144,66 +153,39 @@ const Page = () => {
     }
   }, []);
 
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleDropdown = () => setIsOpen(!isOpen);
+  // Waktu sekarang
+  useEffect(() => {
+    setTime(new Date()); // Set waktu pertama kali di client
+    const interval = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval); // Membersihkan interval saat komponen di-unmount
+  }, []);
 
   return (
-    <div className="flex">
-      <Sidebar />
+    <div className="flex relative">
+      <div className="no-print">
+        <Sidebar />
+      </div>
       <div className="flex flex-col p-4 flex-grow">
-        <h2 className="text-3xl font-bold my-3">Input</h2>
-        <p className="text-xl font-mono">Pilih Data Ruang</p>
-        <div className="flex justify-between">
-          <div className="relative flex-col text-left mt-3 ">
-            <button onClick={toggleDropdown} className="inline-flex  justify-center w-44 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-100">
-              Pilih Opsi
-            </button>
-            <AnimatePresence>
-              {isOpen && (
-                <motion.ul
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit" // Tambahkan animasi exit
-                  variants={variants}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="absolute left-0 w-44 mt-2 origin-top-right bg-white border border-gray-300 rounded-md shadow-lg"
-                >
-                  <Link href={"/sarpras/lainnya"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang Guru</li>
-                  </Link>
+        <h2 className="text-3xl font-bold my-3 no-print">Input</h2>
+        <p className="text-xl font-mono no-print">Pilih Data Ruang</p>
 
-                  <Link href={"/sarpras/lainnya/uks"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang Uks</li>
-                  </Link>
-
-                  <Link href={"/sarpras/lainnya/bk"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang BK</li>
-                  </Link>
-                  <Link href={"/sarpras/lainnya/meet"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang Meet</li>
-                  </Link>
-                  <Link href={"/sarpras/lainnya/perpus"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang Perpus</li>
-                  </Link>
-                  <Link href={"/sarpras/lainnya/labkom"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang Labkom</li>
-                  </Link>
-                  <Link href={"/sarpras/lainnya/musik"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Ruang Musik</li>
-                  </Link>
-                </motion.ul>
-              )}
-            </AnimatePresence>
-
-            {/* Bagian Kelas */}
+        <div className="flex justify-between no-print">
+          <div className="relative flex-col text-left mt-3">
+            <DropdownLainnya />
           </div>
-          <button onClick={handleAddNew} className=" bg-indigo-600 rounded-md w-24 h-11 text-sm border border-white p-2 items-center justify-center transition-all ease-in-out duration-500 text-white hover:bg-indigo-700 hover:scale-105 ">
+          <button
+            onClick={handleAddNew}
+            className="bg-indigo-600 rounded-md w-24 h-11 text-sm border border-white p-2 items-center justify-center transition-all shadow-xl ease-in-out duration-500 text-white hover:bg-indigo-700 hover:scale-105"
+          >
             Add New
           </button>
         </div>
 
         {/* Tabel Ruangan */}
-        <h2 className="flex justify-center text-3xl font-bold my-3">Data Ruang Musik</h2>
+        <h2 className="flex justify-center text-3xl font-bold my-3">Data Master Ruang Musik</h2>
         <div className="overflow-x-auto mt-6 w-full">
           <table className="w-full border-collapse border border-gray-300">
             <thead>
@@ -211,73 +193,97 @@ const Page = () => {
                 <th className="border p-2">ID</th>
                 <th className="border p-2">Nama Barang</th>
                 <th className="border p-2">Quantity</th>
+                <th className="border p-2">Kategori</th>
                 <th className="border p-2">Layak</th>
                 <th className="border p-2">Tidak Layak</th>
-                <th className="border p-2">Aksi</th>
+                <th className="border p-2 w-28">Created At</th>
+                <th className="border p-2 no-print w-28">Aksi</th>
               </tr>
             </thead>
             <tbody>
-              {items.map((item, index) => (
-                <tr key={item.id} className="border">
-                  <td className="border p-2">{index + 1}</td>
-                  <td className="border p-2">{item.nama}</td>
-                  <td className="border p-2">{item.quantity}</td>
-                  <td className="border p-2">{item.layak}</td>
-                  <td className="border p-2">{item.tidak_layak}</td>
-                  <td className="border p-2 flex gap-2">
-                    <button onClick={() => handleEdit(item)} className="px-3 py-1 transition-all ease-in-out duration-500 bg-indigo-600 hover:scale-105 hover:bg-indigo-700 text-white rounded">
-                      Edit
-                    </button>
-                    <button onClick={() => handleDelete(item.id)} className="px-3 py-1 transition-all ease-in-out duration-500 bg-red-500 hover:scale-105 hover:bg-red-600 text-white rounded">
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {items.map((item, index) => {
+                // Jika item.createdAt ada (tipe Firestore Timestamp), ubah jadi string
+                let createdAtString = "";
+                if (item.createdAt && item.createdAt.toDate) {
+                  createdAtString = format(item.createdAt.toDate(), "dd/MM/yyyy HH:mm:ss");
+                }
+
+                return (
+                  <tr key={item.id} className="border text-center even:bg-gray-100">
+                    <td className="border align-middle p-2">{index + 1}</td>
+                    <td className="border align-middle p-2">{item.nama}</td>
+                    <td className="border align-middle p-2">{item.quantity}</td>
+                    <td className="border align-middle p-2">{item.kategori}</td>
+                    <td className="border align-middle p-2">{item.layak}</td>
+                    <td className="border align-middle p-2">{item.tidak_layak}</td>
+                    <td className="border align-middle p-2">{createdAtString || item.Date}</td>
+                    <td className="border p-4 flex gap-2 no-print">
+                      <button onClick={() => handleEdit(item)} className="px-3 py-1 transition-all ease-in-out duration-500 bg-indigo-600 hover:scale-105 hover:bg-indigo-700 text-white rounded">
+                        Edit
+                      </button>
+                      <button onClick={() => handleDelete(item.id)} className="px-3 py-1 transition-all ease-in-out duration-500 bg-red-500 hover:scale-105 hover:bg-red-600 text-white rounded">
+                        Delete
+                      </button>
+                    </td>
+                    {/* Menampilkan createdAt (atau Date jika Anda masih menggunakannya) */}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
-
-          {/* 🔹 Form Tambah/Edit */}
-          {/* Modal overlay untuk form Add New / Edit */}
-          <AnimatePresence>
-            {showForm && (
-              <motion.div
-                className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-              >
-                <motion.div
-                  className="bg-gray-100 p-6 rounded-lg shadow-xl w-full max-w-lg mx-4"
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.9, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                >
-                  <h1 className="flex justify-center text-2xl font-bold mb-4">Manajemen Barang</h1>
-                  <form onSubmit={handleSubmit} className="mb-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <input type="text" name="nama" value={form.nama} onChange={handleChange} placeholder="Nama Barang" className="p-2 border rounded" />
-                      <input type="text" name="quantity" value={form.quantity} onChange={handleChange} placeholder="Quantity" className="p-2 border rounded" />
-                      <input type="number" name="layak" value={form.layak} onChange={handleChange} placeholder="Layak" className="p-2 border rounded" />
-                      <input type="number" name="tidak_layak" value={form.tidak_layak} onChange={handleChange} placeholder="Tidak Layak" className="p-2 border rounded" />
-                    </div>
-                    <div className="flex justify-between mt-4">
-                      <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500">
-                        Cancel
-                      </button>
-                      <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                        {isEditing ? "Update" : "Tambah"}
-                      </button>
-                    </div>
-                  </form>
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       </div>
+      {/* Modal overlay untuk form Add New / Edit */}
+      <AnimatePresence>
+        {showForm && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            <motion.div
+              className="bg-gray-100 p-6 rounded-lg shadow-xl w-full max-w-lg mx-4"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
+              <h1 className="flex justify-center text-2xl font-bold mb-4">Manajemen Barang</h1>
+              <form onSubmit={handleSubmit} className="mb-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="nama">Nama</label>
+                    <input type="text" name="nama" value={form.nama} onChange={handleChange} placeholder="Nama Barang" className="p-2 border rounded" />
+                  </div>
+                  <div>
+                    <label htmlFor="quantity"> Quantity</label>
+                    <input type="number" name="quantity" value={form.quantity} onChange={handleChange} placeholder="Quantity" className="p-2 border rounded" />
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <select name="kategori" value={form.kategori} onChange={handleChange} className="p-2 border rounded w-full">
+                    <option value="">Pilih Kategori</option>
+                    <option value="Elektronik">Elektronik</option>
+                    <option value="Peralatan">Peralatan</option>
+                    <option value="Furniture">Furniture</option>
+                  </select>
+                </div>
+                <div className="flex justify-between mt-4">
+                  <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500">
+                    Cancel
+                  </button>
+                  <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    {isEditing ? "Update" : "Tambah"}
+                  </button>
+                </div>
+                <div>Created At : {time ? format(time, "dd/MM/yyyy HH:mm:ss") : "Loading..."}</div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

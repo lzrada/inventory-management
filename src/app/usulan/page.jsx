@@ -231,7 +231,7 @@ const Usulan = () => {
               </thead>
               <tbody>
                 {items.map((item, index) => (
-                  <tr key={item.id} className="border">
+                  <tr key={item.id} className="border even:bg-gray-100">
                     <td className="border p-2">{index + 1}</td>
                     <td className="border p-2">{item.pengusul}</td>
                     <td className="border p-2">{item.namaBarang}</td>
@@ -298,9 +298,7 @@ const Usulan = () => {
       </div>
 
       {/* 
-        BAGIAN TEMPLATE PRINT SEMUA DATA (Inventory Management Style)
-        Overlay template ditampilkan ketika handlePrintWithTemplate dipanggil.
-        Tombol close dan print dihapus karena proses print dipicu otomatis.
+        Template Print        
       */}
       {showInventoryPrint && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm inventory-print">

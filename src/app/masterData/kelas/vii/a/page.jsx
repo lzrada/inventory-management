@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { format } from "date-fns";
+import Dropdown from "@/app/components/master/Dropdown";
 
 const Page = () => {
   const [userData, setUserData] = useState(null);
@@ -24,15 +25,8 @@ const Page = () => {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleDropdown = () => setIsOpen(!isOpen);
-  const [time, setTime] = useState(null);
 
-  const variants = {
-    hidden: { opacity: 0, y: -10 },
-    visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -10 },
-  };
+  const [time, setTime] = useState(null);
 
   // Ambil data saat halaman dimuat
   useEffect(() => {
@@ -42,7 +36,7 @@ const Page = () => {
   // ambil data dari API
   const fetchItems = async () => {
     try {
-      const res = await axios.get("/api/master/kelas/vii/a");
+      const res = await axios.get("/api/kelas/vii/a");
       setItems(res.data);
     } catch (error) {
       console.error("Gagal mengambil data:", error);
@@ -78,10 +72,10 @@ const Page = () => {
 
     try {
       if (isEditing) {
-        await axios.put("/api/master/kelas/vii/a", payload);
+        await axios.put("/api/kelas/vii/a", payload);
         Swal.fire("Success", "Data berhasil diperbarui!", "success");
       } else {
-        await axios.post("/api/master/kelas/vii/a", payload);
+        await axios.post("/api/kelas/vii/a", payload);
         Swal.fire("Success", "Data berhasil ditambahkan!", "success");
       }
       fetchItems();
@@ -107,7 +101,7 @@ const Page = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete("/api/master/kelas/vii/a", { data: { id } });
+          await axios.delete("/api/kelas/vii/a", { data: { id } });
           fetchItems();
           Swal.fire({
             title: "Deleted!",
@@ -180,31 +174,19 @@ const Page = () => {
 
         <div className="flex justify-between no-print">
           <div className="relative flex-col text-left mt-3">
-            <button onClick={toggleDropdown} className="inline-flex justify-center w-44 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-100">
-              Pilih Opsi
-            </button>
-            <AnimatePresence>
-              {isOpen && (
-                <motion.ul
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  variants={variants}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="absolute left-0 w-44 mt-2 origin-top-right bg-white border border-gray-300 rounded-md shadow-lg"
-                >
-                  <Link href={"/sarpras"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas VII</li>
-                  </Link>
-                  <Link href={"/sarpras/kelas/viii"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas VIII</li>
-                  </Link>
-                  <Link href={"/sarpras/kelas/ix"}>
-                    <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Kelas IX</li>
-                  </Link>
-                </motion.ul>
-              )}
-            </AnimatePresence>
+            <Dropdown />
+            <div className="flex gap-3">
+              <div className="w-11 h-11 border border-gray-400 rounded-xl mt-4">
+                <Link href="/masterData/kelas/vii/a" className="w-full h-full flex object-fill items-center justify-center">
+                  A
+                </Link>
+              </div>
+              <div className="w-11 h-11 border border-gray-400 rounded-xl mt-4">
+                <Link href="/masterData/kelas/vii/b" className="w-full h-full flex object-fill items-center justify-center">
+                  B
+                </Link>
+              </div>
+            </div>
           </div>
           <button
             onClick={handleAddNew}
@@ -239,7 +221,7 @@ const Page = () => {
                 }
 
                 return (
-                  <tr key={item.id} className="border text-center">
+                  <tr key={item.id} className="border text-center even:bg-gray-100">
                     <td className="border align-middle p-2">{index + 1}</td>
                     <td className="border align-middle p-2">{item.nama}</td>
                     <td className="border align-middle p-2">{item.quantity}</td>
