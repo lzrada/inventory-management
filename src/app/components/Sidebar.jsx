@@ -9,6 +9,7 @@ const Sidebar = () => {
   const router = useRouter();
   const [isMasterOpen, setIsMasterOpen] = useState(false);
   const [isManajemenOpen, setIsManajemenOpen] = useState(false);
+  const [isRekapOpen, setIsRekapOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   return (
@@ -84,10 +85,30 @@ const Sidebar = () => {
           Usulan
         </Link>
 
-        <Link href="/rekap" className="text-white hover:bg-gray-900 hover:rounded-xl p-3 font-medium text-2xl my-2 mx-3 flex items-center">
-          <FontAwesomeIcon icon={faFile} className="w-5 h-5 mx-3" />
-          Rekap Data
-        </Link>
+        <div className="mx-3">
+          <button className="text-white hover:bg-gray-900 hover:rounded-xl p-3 font-medium text-2xl my-2 flex items-center w-full" onClick={() => setIsRekapOpen(!isRekapOpen)}>
+            <FontAwesomeIcon icon={faFile} className="w-5 h-5 mx-3" />
+            Rekap Data
+            <FontAwesomeIcon icon={isRekapOpen ? faChevronUp : faChevronDown} className="w-4 h-4 ml-auto" />
+          </button>
+
+          {/* Dropdown */}
+          <div
+            ref={dropdownRef}
+            className="ml-12 overflow-hidden transition-all duration-500 ease-in-out"
+            style={{
+              maxHeight: isRekapOpen ? `${dropdownRef.current?.scrollHeight}px` : "0px",
+              opacity: isRekapOpen ? 1 : 0,
+            }}
+          >
+            <Link href="/rekap/kelas/vii/a" className="block text-white hover:bg-gray-900 hover:rounded-xl p-2 text-lg">
+              Ruang Kelas
+            </Link>
+            <Link href="/rekap/lainnya/bk" className="block text-white hover:bg-gray-900 hover:rounded-xl p-2 text-lg">
+              Ruang Lainnya
+            </Link>
+          </div>
+        </div>
 
         {/* Logout */}
         <button
@@ -106,9 +127,9 @@ const Sidebar = () => {
       <p
         className={`
     absolute bottom-0 italic font-mono text-white 
-    transition-all ease-in-out duration-300 
+    transition-all  ease-in-out duration-300 
      opacity-75 m-4 
-    ${isMasterOpen || isManajemenOpen ? "opacity-0 translate-y-2 pointer-events-none" : "opacity-100 translate-y-0 pointer-events-auto"}
+    ${isMasterOpen || isManajemenOpen || isRekapOpen ? "opacity-0 translate-y-2 hidden transition-all ease-in-out duration-300 pointer-events-none" : "opacity-100 translate-y-0 pointer-events-auto"}
   `}
       >
         &copy; MTS MIFTAAHUL ULUM

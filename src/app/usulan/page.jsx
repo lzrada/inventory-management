@@ -301,9 +301,9 @@ const Usulan = () => {
         Template Print        
       */}
       {showInventoryPrint && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm inventory-print">
-          <div className="bg-white w-full mx-auto border p-2">
-            <Image className="absolute top-3 left- w-20" src="/image/logo.png" alt="Logo Universitas" width={100} height={100} priority={true} />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-50 backdrop-blur-sm inventory-print">
+          <div className="bg-white w-full mx-auto border-2 border-gray-300 p-5">
+            <Image className="absolute top-3 left-4 w-20" src="/image/logo.png" alt="Logo Universitas" width={100} height={100} priority={true} />
             {/* Header Template */}
             <div className="text-center mb-4">
               <h1 className="text-xl font-bold uppercase">LAPORAN DATA USULAN BARANG</h1>

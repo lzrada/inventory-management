@@ -22,6 +22,12 @@
   .inventory-print {
     display: block !important;
   }
+  @media print {
+    * {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
 }
 /* Default: inventory-print disembunyikan di layar */
 .inventory-print {
