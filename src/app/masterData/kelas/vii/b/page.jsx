@@ -262,7 +262,7 @@ const Page = () => {
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
             >
-              <h1 className="flex justify-center text-2xl font-bold mb-4">Manajemen Barang</h1>
+              <h1 className="flex justify-center text-2xl font-bold mb-4">Master Data Barang</h1>
               <form onSubmit={handleSubmit} className="mb-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>

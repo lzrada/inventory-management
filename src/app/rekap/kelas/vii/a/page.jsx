@@ -88,7 +88,7 @@ const Page = () => {
             </div>
           </div>
           <button onClick={handlePrint} className="flex w-60 justify-center p-3 no-print items-center h-8 rounded-md bg-green-600 text-white hover:bg-green-700 active:scale-90 transition-all duration-300 ease-in-out">
-            Print Data Usulan
+            Print Data Rekap
           </button>
         </div>
         {/* Tabel Ruangan */}
@@ -160,7 +160,7 @@ const Page = () => {
               <div className="text-sm mb-4">
                 <p className="font-bold">Catatan:</p>
                 <ul className="list-disc list-inside">
-                  <li>Laporan ini memuat seluruh data usulan barang yang telah diinput.</li>
+                  <li>Laporan ini memuat seluruh data rekap barang yang telah diinput.</li>
                   <li>Mohon periksa kembali data sebelum disetujui atau diproses lebih lanjut.</li>
                   <li>Pastikan semua data benar dan up-to-date.</li>
                 </ul>

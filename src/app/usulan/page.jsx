@@ -270,7 +270,7 @@ const Usulan = () => {
                     exit={{ scale: 0.9, opacity: 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                   >
-                    <h1 className="flex justify-center text-2xl font-bold mb-4">Manajemen Barang</h1>
+                    <h1 className="flex justify-center text-2xl font-bold mb-4">Usulan Barang</h1>
                     <form onSubmit={handleSubmit} className="mb-4 p-4 border rounded-lg bg-gray-100">
                       <div className="grid grid-cols-2 gap-4">
                         <input type="text" name="pengusul" value={form.pengusul} onChange={handleChange} placeholder="Pengusul" className="p-2 border rounded" />
